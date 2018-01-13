@@ -1,0 +1,22 @@
+{
+  "name": "@pixel2html/pipes",
+  "version": "0.0.1",
+  "description": "Plugabble pipes for a composable gulp stream",
+  "main": "index.js",
+  "repository": "git@github.com:mike3run/pipes.git",
+  "author": "Miguel Palau <mpalauzarza@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "lint": "eslint 'pipes/**/*.js'"
+  },
+  "dependencies": {
+    "@pixel2html/browserlist": "^1.0.0"
+  },
+  "devDependencies": {
+    "@pixel2html/eslint-config": "^1.0.0",
+    "eslint": "^4.15.0"
+  },
+  "eslintConfig": {
+    "extends": "@pixel2html/eslint-config"
+  }
+}

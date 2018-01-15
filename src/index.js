@@ -1,5 +1,6 @@
-import styles from './pipes/styles'
+import styles, {getJSON} from './pipes/styles'
 
 export {
-  styles
+  styles,
+  getJSON
 }

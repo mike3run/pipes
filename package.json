@@ -7,6 +7,10 @@
   "repository": "git@github.com:mike3run/pipes.git",
   "author": "Miguel Palau <mpalauzarza@gmail.com>",
   "license": "MIT",
+  "files": [
+    "dist/pixel2html-pipes.cjs.js",
+    "dist/pixel2html-pipes.esm.js"
+  ],
   "scripts": {
     "lint": "eslint 'pipes/**/*.js'",
     "build": "rollup -c",

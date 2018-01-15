@@ -10,11 +10,15 @@ import browsers from '@pixel2html/browserlist';
 import path from 'path';
 import set from 'lodash.set';
 import { stream } from 'critical';
+import name from 'gulp-rename';
+import csscomb from 'gulp-csscomb';
+import groupCssMediaQueries from 'gulp-group-css-media-queries';
+import cssnano from 'gulp-cssnano';
 
 const cssModules = {};
 
 const styles = ({
-  name = 'main.css',
+  name: name$$1 = 'main.css',
   modules = false,
   production = false,
   postCssPlugins = []
@@ -41,7 +45,7 @@ const styles = ({
   const baseStyles = lazypipe()
     .pipe(sass, { importer: moduleImporter() })
     .pipe(postCss, postCssPlugs)
-    .pipe(concat, name);
+    .pipe(concat, name$$1);
 
   const sourcemapStyles = lazypipe()
     .pipe(sourcemaps.init)
@@ -60,4 +64,14 @@ const critical$1 = (criticalConfig = {}) => {
     .pipe(stream, config)
 };
 
-export { styles, getJSON, critical$1 as critical };
+const minifyStyles = ({rename}) => {
+  const renameDefaults = {suffix: '.min'};
+  const renameConfig = Object.assign({}, renameDefaults, rename);
+  return lazypipe()
+    .pipe(name(renameConfig))
+    .pipe(csscomb())
+    .pipe(groupCssMediaQueries())
+    .pipe(cssnano())
+};
+
+export { styles, getJSON, critical$1 as critical, minifyStyles };

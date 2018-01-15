@@ -16,11 +16,15 @@ var browsers = _interopDefault(require('@pixel2html/browserlist'));
 var path = _interopDefault(require('path'));
 var set = _interopDefault(require('lodash.set'));
 var critical = require('critical');
+var name = _interopDefault(require('gulp-rename'));
+var csscomb = _interopDefault(require('gulp-csscomb'));
+var groupCssMediaQueries = _interopDefault(require('gulp-group-css-media-queries'));
+var cssnano = _interopDefault(require('gulp-cssnano'));
 
 const cssModules = {};
 
 const styles = ({
-  name = 'main.css',
+  name: name$$1 = 'main.css',
   modules = false,
   production = false,
   postCssPlugins = []
@@ -47,7 +51,7 @@ const styles = ({
   const baseStyles = lazypipe()
     .pipe(sass, { importer: moduleImporter() })
     .pipe(postCss, postCssPlugs)
-    .pipe(concat, name);
+    .pipe(concat, name$$1);
 
   const sourcemapStyles = lazypipe()
     .pipe(sourcemaps.init)
@@ -66,6 +70,17 @@ const critical$1 = (criticalConfig = {}) => {
     .pipe(critical.stream, config)
 };
 
+const minifyStyles = ({rename}) => {
+  const renameDefaults = {suffix: '.min'};
+  const renameConfig = Object.assign({}, renameDefaults, rename);
+  return lazypipe()
+    .pipe(name(renameConfig))
+    .pipe(csscomb())
+    .pipe(groupCssMediaQueries())
+    .pipe(cssnano())
+};
+
 exports.styles = styles;
 exports.getJSON = getJSON;
 exports.critical = critical$1;
+exports.minifyStyles = minifyStyles;

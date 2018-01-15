@@ -9,6 +9,7 @@ import postCssModules from 'postcss-modules';
 import browsers from '@pixel2html/browserlist';
 import path from 'path';
 import set from 'lodash.set';
+import { stream } from 'critical';
 
 const cssModules = {};
 
@@ -52,4 +53,11 @@ const styles = ({
 
 const getJSON = () => JSON.stringify(cssModules, null, 2);
 
-export { styles, getJSON };
+const critical$1 = (criticalConfig = {}) => {
+  const defaultConfig = { inline: true };
+  const config = Object.assign({}, defaultConfig, criticalConfig);
+  return lazypipe()
+    .pipe(stream, config)
+};
+
+export { styles, getJSON, critical$1 as critical };

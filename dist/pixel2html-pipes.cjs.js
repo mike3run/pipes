@@ -15,6 +15,7 @@ var postCssModules = _interopDefault(require('postcss-modules'));
 var browsers = _interopDefault(require('@pixel2html/browserlist'));
 var path = _interopDefault(require('path'));
 var set = _interopDefault(require('lodash.set'));
+var critical = require('critical');
 
 const cssModules = {};
 
@@ -58,5 +59,13 @@ const styles = ({
 
 const getJSON = () => JSON.stringify(cssModules, null, 2);
 
+const critical$1 = (criticalConfig = {}) => {
+  const defaultConfig = { inline: true };
+  const config = Object.assign({}, defaultConfig, criticalConfig);
+  return lazypipe()
+    .pipe(critical.stream, config)
+};
+
 exports.styles = styles;
 exports.getJSON = getJSON;
+exports.critical = critical$1;

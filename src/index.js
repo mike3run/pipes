@@ -1,10 +1,12 @@
-import styles, {getJSON} from './pipes/styles'
 import critical from './pipes/critical'
 import minifyStyles from './pipes/minifyStyles'
+import purify from './pipes/purify'
+import styles, {getJSON} from './pipes/styles'
 
 export {
-  styles,
-  getJSON,
   critical,
-  minifyStyles
+  minifyStyles,
+  purify,
+  styles,
+  getJSON
 }

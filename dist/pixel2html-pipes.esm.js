@@ -1,4 +1,10 @@
 import lazypipe from 'lazypipe';
+import { stream } from 'critical';
+import name from 'gulp-rename';
+import csscomb from 'gulp-csscomb';
+import groupCssMediaQueries from 'gulp-group-css-media-queries';
+import cssnano from 'gulp-cssnano';
+import purifyCss from 'gulp-purifycss';
 import moduleImporter from 'sass-module-importer';
 import sass from 'gulp-sass';
 import postCss from 'gulp-postcss';
@@ -9,11 +15,30 @@ import postCssModules from 'postcss-modules';
 import browsers from '@pixel2html/browserlist';
 import path from 'path';
 import set from 'lodash.set';
-import { stream } from 'critical';
-import name from 'gulp-rename';
-import csscomb from 'gulp-csscomb';
-import groupCssMediaQueries from 'gulp-group-css-media-queries';
-import cssnano from 'gulp-cssnano';
+
+const critical$1 = (criticalConfig = {}) => {
+  const defaultConfig = { inline: true };
+  const config = Object.assign({}, defaultConfig, criticalConfig);
+  return lazypipe()
+    .pipe(stream, config)
+};
+
+const minifyStyles = ({rename}) => {
+  const renameDefaults = {suffix: '.min'};
+  const renameConfig = Object.assign({}, renameDefaults, rename);
+  return lazypipe()
+    .pipe(name, renameConfig)
+    .pipe(csscomb)
+    .pipe(groupCssMediaQueries)
+    .pipe(cssnano)
+};
+
+const purify = ({paths, userConfig}) => {
+  const defaultConfig = { info: true };
+  const config = Object.assign({}, defaultConfig, userConfig);
+  return lazypipe()
+    .pipe(purifyCss, paths, config)
+};
 
 const cssModules = {};
 
@@ -57,21 +82,4 @@ const styles = ({
 
 const getJSON = () => JSON.stringify(cssModules, null, 2);
 
-const critical$1 = (criticalConfig = {}) => {
-  const defaultConfig = { inline: true };
-  const config = Object.assign({}, defaultConfig, criticalConfig);
-  return lazypipe()
-    .pipe(stream, config)
-};
-
-const minifyStyles = ({rename}) => {
-  const renameDefaults = {suffix: '.min'};
-  const renameConfig = Object.assign({}, renameDefaults, rename);
-  return lazypipe()
-    .pipe(name(renameConfig))
-    .pipe(csscomb())
-    .pipe(groupCssMediaQueries())
-    .pipe(cssnano())
-};
-
-export { styles, getJSON, critical$1 as critical, minifyStyles };
+export { critical$1 as critical, minifyStyles, purify, styles, getJSON };

@@ -8,10 +8,10 @@ const minifyStyles = ({rename}) => {
   const renameDefaults = {suffix: '.min'}
   const renameConfig = Object.assign({}, renameDefaults, rename)
   return lazypipe()
-    .pipe(name(renameConfig))
-    .pipe(csscomb())
-    .pipe(groupCssMediaQueries())
-    .pipe(cssnano())
+    .pipe(name, renameConfig)
+    .pipe(csscomb)
+    .pipe(groupCssMediaQueries)
+    .pipe(cssnano)
 }
 
 export default minifyStyles

@@ -5,6 +5,12 @@ Object.defineProperty(exports, '__esModule', { value: true });
 function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
 
 var lazypipe = _interopDefault(require('lazypipe'));
+var critical = require('critical');
+var name = _interopDefault(require('gulp-rename'));
+var csscomb = _interopDefault(require('gulp-csscomb'));
+var groupCssMediaQueries = _interopDefault(require('gulp-group-css-media-queries'));
+var cssnano = _interopDefault(require('gulp-cssnano'));
+var purifyCss = _interopDefault(require('gulp-purifycss'));
 var moduleImporter = _interopDefault(require('sass-module-importer'));
 var sass = _interopDefault(require('gulp-sass'));
 var postCss = _interopDefault(require('gulp-postcss'));
@@ -15,11 +21,30 @@ var postCssModules = _interopDefault(require('postcss-modules'));
 var browsers = _interopDefault(require('@pixel2html/browserlist'));
 var path = _interopDefault(require('path'));
 var set = _interopDefault(require('lodash.set'));
-var critical = require('critical');
-var name = _interopDefault(require('gulp-rename'));
-var csscomb = _interopDefault(require('gulp-csscomb'));
-var groupCssMediaQueries = _interopDefault(require('gulp-group-css-media-queries'));
-var cssnano = _interopDefault(require('gulp-cssnano'));
+
+const critical$1 = (criticalConfig = {}) => {
+  const defaultConfig = { inline: true };
+  const config = Object.assign({}, defaultConfig, criticalConfig);
+  return lazypipe()
+    .pipe(critical.stream, config)
+};
+
+const minifyStyles = ({rename}) => {
+  const renameDefaults = {suffix: '.min'};
+  const renameConfig = Object.assign({}, renameDefaults, rename);
+  return lazypipe()
+    .pipe(name, renameConfig)
+    .pipe(csscomb)
+    .pipe(groupCssMediaQueries)
+    .pipe(cssnano)
+};
+
+const purify = ({paths, userConfig}) => {
+  const defaultConfig = { info: true };
+  const config = Object.assign({}, defaultConfig, userConfig);
+  return lazypipe()
+    .pipe(purifyCss, paths, config)
+};
 
 const cssModules = {};
 
@@ -63,24 +88,8 @@ const styles = ({
 
 const getJSON = () => JSON.stringify(cssModules, null, 2);
 
-const critical$1 = (criticalConfig = {}) => {
-  const defaultConfig = { inline: true };
-  const config = Object.assign({}, defaultConfig, criticalConfig);
-  return lazypipe()
-    .pipe(critical.stream, config)
-};
-
-const minifyStyles = ({rename}) => {
-  const renameDefaults = {suffix: '.min'};
-  const renameConfig = Object.assign({}, renameDefaults, rename);
-  return lazypipe()
-    .pipe(name(renameConfig))
-    .pipe(csscomb())
-    .pipe(groupCssMediaQueries())
-    .pipe(cssnano())
-};
-
-exports.styles = styles;
-exports.getJSON = getJSON;
 exports.critical = critical$1;
 exports.minifyStyles = minifyStyles;
+exports.purify = purify;
+exports.styles = styles;
+exports.getJSON = getJSON;

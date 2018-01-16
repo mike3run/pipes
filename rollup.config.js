@@ -11,7 +11,8 @@ export default [
       // Everything under dependencies in package.json
       ...Object.keys(pkg.dependencies),
       // Node packages not in package.json
-      'path'
+      'path',
+      'fs'
     ]
   }
 ]

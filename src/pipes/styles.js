@@ -17,24 +17,22 @@ const styles = ({
   name = 'main.css',
   modules = false,
   production = false,
-  postCssPlugins = []
+  postCssPlugins = [],
+  baseDir = 'main'
 }) => {
-  const basePlugins = [autoprefixer({ browsers })]
-
-  if (modules) {
-    basePlugins.push(
-      postCssModules({
-        generateScopedName: production ? '[hash:base64:5]' : '[name]__[local]___[hash:base64:5]',
-        getJSON: (cssPath, json) => {
-          const pathWithoutExtension = cssPath.split('.css')[0]
-          const exploded = pathWithoutExtension.split(path.sep)
-          const mainIndex = exploded.indexOf('main')
-          const dirs = exploded.slice(mainIndex + 1)
-          set(cssModules, dirs, json)
-        }
-      })
-    )
-  }
+  const basePlugins = [
+    autoprefixer({ browsers }),
+    modules && postCssModules({
+      generateScopedName: production ? '[hash:base64:5]' : '[name]__[local]___[hash:base64:5]',
+      getJSON: (cssPath, json) => {
+        const pathWithoutExtension = cssPath.split('.css')[0]
+        const exploded = pathWithoutExtension.split(path.sep)
+        const mainIndex = exploded.indexOf(baseDir)
+        const dirs = exploded.slice(mainIndex + 1)
+        set(cssModules, dirs, json)
+      }
+    })
+  ]
 
   const postCssPlugs = [...basePlugins, ...postCssPlugins]
 

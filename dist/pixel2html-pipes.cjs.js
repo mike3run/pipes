@@ -114,17 +114,12 @@ const styles = ({
 
   const postCssPlugs = [...basePlugins, ...postCssPlugins];
 
-  const baseStyles = lazypipe()
+  return lazypipe()
+    .pipe(sourcemaps.init)
     .pipe(sass, { importer: moduleImporter() })
     .pipe(postCss, postCssPlugs)
-    .pipe(concat, name$$1);
-
-  const sourcemapStyles = lazypipe()
-    .pipe(sourcemaps.init)
-    .pipe(baseStyles)
-    .pipe(sourcemaps.write, '.');
-
-  return production ? baseStyles : sourcemapStyles
+    .pipe(concat, name$$1)
+    .pipe(sourcemaps.write, '.')
 };
 
 const getJSON = () => JSON.stringify(cssModules, null, 2);

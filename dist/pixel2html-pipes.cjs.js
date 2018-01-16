@@ -6,10 +6,16 @@ function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'defau
 
 var lazypipe = _interopDefault(require('lazypipe'));
 var critical = require('critical');
+var modules = _interopDefault(require('posthtml-css-modules'));
+var img = _interopDefault(require('posthtml-img-autosize'));
+var postHtml = _interopDefault(require('gulp-posthtml'));
+var prettify = _interopDefault(require('gulp-html-prettify'));
+var replace = _interopDefault(require('gulp-html-replace'));
 var name = _interopDefault(require('gulp-rename'));
 var csscomb = _interopDefault(require('gulp-csscomb'));
 var groupCssMediaQueries = _interopDefault(require('gulp-group-css-media-queries'));
 var cssnano = _interopDefault(require('gulp-cssnano'));
+var compiler = _interopDefault(require('gulp-pug'));
 var purifyCss = _interopDefault(require('gulp-purifycss'));
 var moduleImporter = _interopDefault(require('sass-module-importer'));
 var sass = _interopDefault(require('gulp-sass'));
@@ -29,6 +35,23 @@ const critical$1 = (criticalConfig = {}) => {
     .pipe(critical.stream, config)
 };
 
+const html = ({
+  cssModules,
+  imgAutoSize,
+  htmlReplace,
+  plugins = []
+}) => {
+  const defaultPlugins = [
+    modules(cssModules),
+    img(imgAutoSize)
+  ];
+  const postHtmlPlugins = [...defaultPlugins, ...plugins];
+  return lazypipe()
+    .pipe(replace, htmlReplace)
+    .pipe(postHtml, postHtmlPlugins)
+    .pipe(prettify)
+};
+
 const minifyStyles = ({rename}) => {
   const renameDefaults = {suffix: '.min'};
   const renameConfig = Object.assign({}, renameDefaults, rename);
@@ -37,6 +60,24 @@ const minifyStyles = ({rename}) => {
     .pipe(csscomb)
     .pipe(groupCssMediaQueries)
     .pipe(cssnano)
+};
+
+const pug = ({
+  cssModules,
+  imgAutoSize,
+  pug,
+  plugins = []
+}) => {
+  const defaultPlugins = [
+    modules(cssModules),
+    img(imgAutoSize)
+  ];
+
+  const postHtmlPlugins = [...defaultPlugins, ...plugins];
+  return lazypipe()
+    .pipe(compiler, pug)
+    .pipe(postHtml, postHtmlPlugins)
+    .pipe(prettify)
 };
 
 const purify = ({paths, userConfig}) => {
@@ -50,13 +91,13 @@ const cssModules = {};
 
 const styles = ({
   name: name$$1 = 'main.css',
-  modules = false,
+  modules: modules$$1 = false,
   production = false,
   postCssPlugins = []
 }) => {
   const basePlugins = [autoprefixer({ browsers })];
 
-  if (modules) {
+  if (modules$$1) {
     basePlugins.push(
       postCssModules({
         generateScopedName: production ? '[hash:base64:5]' : '[name]__[local]___[hash:base64:5]',
@@ -89,7 +130,9 @@ const styles = ({
 const getJSON = () => JSON.stringify(cssModules, null, 2);
 
 exports.critical = critical$1;
+exports.html = html;
 exports.minifyStyles = minifyStyles;
+exports.pug = pug;
 exports.purify = purify;
 exports.styles = styles;
 exports.getJSON = getJSON;

@@ -1,9 +1,15 @@
 import lazypipe from 'lazypipe';
 import { stream } from 'critical';
+import modules from 'posthtml-css-modules';
+import img from 'posthtml-img-autosize';
+import postHtml from 'gulp-posthtml';
+import prettify from 'gulp-html-prettify';
+import replace from 'gulp-html-replace';
 import name from 'gulp-rename';
 import csscomb from 'gulp-csscomb';
 import groupCssMediaQueries from 'gulp-group-css-media-queries';
 import cssnano from 'gulp-cssnano';
+import compiler from 'gulp-pug';
 import purifyCss from 'gulp-purifycss';
 import moduleImporter from 'sass-module-importer';
 import sass from 'gulp-sass';
@@ -23,6 +29,23 @@ const critical$1 = (criticalConfig = {}) => {
     .pipe(stream, config)
 };
 
+const html = ({
+  cssModules,
+  imgAutoSize,
+  htmlReplace,
+  plugins = []
+}) => {
+  const defaultPlugins = [
+    modules(cssModules),
+    img(imgAutoSize)
+  ];
+  const postHtmlPlugins = [...defaultPlugins, ...plugins];
+  return lazypipe()
+    .pipe(replace, htmlReplace)
+    .pipe(postHtml, postHtmlPlugins)
+    .pipe(prettify)
+};
+
 const minifyStyles = ({rename}) => {
   const renameDefaults = {suffix: '.min'};
   const renameConfig = Object.assign({}, renameDefaults, rename);
@@ -31,6 +54,24 @@ const minifyStyles = ({rename}) => {
     .pipe(csscomb)
     .pipe(groupCssMediaQueries)
     .pipe(cssnano)
+};
+
+const pug = ({
+  cssModules,
+  imgAutoSize,
+  pug,
+  plugins = []
+}) => {
+  const defaultPlugins = [
+    modules(cssModules),
+    img(imgAutoSize)
+  ];
+
+  const postHtmlPlugins = [...defaultPlugins, ...plugins];
+  return lazypipe()
+    .pipe(compiler, pug)
+    .pipe(postHtml, postHtmlPlugins)
+    .pipe(prettify)
 };
 
 const purify = ({paths, userConfig}) => {
@@ -44,13 +85,13 @@ const cssModules = {};
 
 const styles = ({
   name: name$$1 = 'main.css',
-  modules = false,
+  modules: modules$$1 = false,
   production = false,
   postCssPlugins = []
 }) => {
   const basePlugins = [autoprefixer({ browsers })];
 
-  if (modules) {
+  if (modules$$1) {
     basePlugins.push(
       postCssModules({
         generateScopedName: production ? '[hash:base64:5]' : '[name]__[local]___[hash:base64:5]',
@@ -82,4 +123,4 @@ const styles = ({
 
 const getJSON = () => JSON.stringify(cssModules, null, 2);
 
-export { critical$1 as critical, minifyStyles, purify, styles, getJSON };
+export { critical$1 as critical, html, minifyStyles, pug, purify, styles, getJSON };

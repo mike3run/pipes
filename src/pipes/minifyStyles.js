@@ -4,7 +4,7 @@ import csscomb from 'gulp-csscomb'
 import groupCssMediaQueries from 'gulp-group-css-media-queries'
 import cssnano from 'gulp-cssnano'
 
-const minifyStyles = ({rename}) => {
+const minifyStyles = (rename) => {
   const renameDefaults = {suffix: '.min'}
   const renameConfig = Object.assign({}, renameDefaults, rename)
   return lazypipe()

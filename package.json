@@ -15,7 +15,8 @@
     "lint": "eslint 'pipes/**/*.js'",
     "build": "rollup -c",
     "prepare": "npm run build",
-    "dev": "rollup -c -w"
+    "dev": "rollup -c -w",
+    "postversion": "git push; git push --tags"
   },
   "dependencies": {
     "@pixel2html/browserlist": "^1.0.0",

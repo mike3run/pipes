@@ -38,17 +38,12 @@ const styles = ({
 
   const postCssPlugs = [...basePlugins, ...postCssPlugins]
 
-  const baseStyles = lazypipe()
+  return lazypipe()
+    .pipe(sourcemaps.init)
     .pipe(sass, { importer: moduleImporter() })
     .pipe(postCss, postCssPlugs)
     .pipe(concat, name)
-
-  const sourcemapStyles = lazypipe()
-    .pipe(sourcemaps.init)
-    .pipe(baseStyles)
     .pipe(sourcemaps.write, '.')
-
-  return production ? baseStyles : sourcemapStyles
 }
 
 export const getJSON = () => JSON.stringify(cssModules, null, 2)

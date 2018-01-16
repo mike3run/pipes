@@ -8,8 +8,8 @@
   "author": "Miguel Palau <mpalauzarza@gmail.com>",
   "license": "MIT",
   "files": [
-    "dist/pixel2html-pipes.cjs.js",
-    "dist/pixel2html-pipes.esm.js"
+    "dist/pipes.js",
+    "dist/pipes.modular.js"
   ],
   "scripts": {
     "lint": "eslint 'pipes/**/*.js'",

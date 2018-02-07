@@ -29,12 +29,12 @@
     "gulp-html-prettify": "^0.0.1",
     "gulp-html-replace": "^1.6.2",
     "gulp-postcss": "^7.0.1",
-    "gulp-posthtml": "^3.0.2",
+    "gulp-posthtml": "^3.0.4",
     "gulp-pug": "^3.3.0",
     "gulp-purifycss": "^0.2.0",
     "gulp-rename": "^1.2.2",
     "gulp-sass": "^3.1.0",
-    "gulp-sourcemaps": "^2.6.3",
+    "gulp-sourcemaps": "^2.6.4",
     "lazypipe": "^1.0.1",
     "lodash.set": "^4.3.2",
     "postcss-modules": "^1.1.0",
@@ -43,9 +43,9 @@
     "sass-module-importer": "^1.4.0"
   },
   "devDependencies": {
-    "@pixel2html/eslint-config": "^1.0.0",
-    "eslint": "^4.15.0",
-    "rollup": "^0.54.0"
+    "@pixel2html/eslint-config": "^1.1.1",
+    "eslint": "^4.17.0",
+    "rollup": "^0.55.3"
   },
   "eslintConfig": {
     "extends": "@pixel2html/eslint-config"
